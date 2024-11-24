@@ -1,0 +1,2 @@
+# FunctionalAndRightProgramming
+Изучение Scala
