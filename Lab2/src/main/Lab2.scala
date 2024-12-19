@@ -53,21 +53,18 @@ def goodEnoughPasswordTry(password: String): Either[Boolean, String] = {
 //4
 def readPassword(): Future[String] = {
   Future {
-    var password: Option[String] = None
-    while (password.isEmpty) {
-      println("Введите пароль:")
-      val input = StdIn.readLine()
+    println("Введите пароль:")
+    StdIn.readLine()
+  }.flatMap { input =>
+    goodEnoughPasswordTry(input) match {
+      case Left(true) =>
+        println("Пароль подходит!")
+        Future.successful(input)  
 
-      goodEnoughPasswordTry(input) match {
-        case Left(true) =>
-          println("Пароль подходит!")
-          password = Some(input) 
-
-        case Right(reason) =>
-          println(s"Пароль не принят: $reason. Попробуйте ещё раз.")
-      }
+      case Right(reason) =>
+        println(s"Пароль не принят: $reason. Попробуйте ещё раз.")
+        readPassword()  
     }
-    password.get 
   }
 }
 
